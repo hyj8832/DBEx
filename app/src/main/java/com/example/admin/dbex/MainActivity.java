@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -13,11 +16,35 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends AppCompatActivity {
-
+  EditText editName,editCount,editResultName,editResultCount;
+    Button butInit,butInsert,butSelect;
+    MyDBHelper myHelper;
+    SQLiteDatabase sqlDb; //데이터 베이스 참조 변수
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        editName=(EditText)findViewById(R.id.edit_group_name);
+        editCount=(EditText)findViewById(R.id.edit_group_count);
+        editResultCount=(EditText)findViewById(R.id.edit_result_count);
+        editResultName=(EditText)findViewById(R.id.edit_result_name);
+        butInit=(Button)findViewById(R.id.but_init);
+        butInsert=(Button)findViewById(R.id.but_insert);
+        butSelect=(Button)findViewById(R.id.but_select);
+
+        //DB생성
+        myHelper=new MyDBHelper(this);
+        //기존의 테이블이 존재하면 삭제하고 테이블을 새로 생성한다. (첫번째 이벤트 핸들링 ..초기화 버튼 클릭했을 때)
+        butInit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sqlDb=myHelper.getWritableDatabase();//참조값 대입
+                myHelper.onUpgrade(sqlDb,1,2);//버전 번호
+                sqlDb.close();
+            }
+        });
+
+
     }
 
     class MyDBHelper extends SQLiteOpenHelper {

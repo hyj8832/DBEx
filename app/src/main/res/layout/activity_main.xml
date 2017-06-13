@@ -78,7 +78,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#000000">
+        android:background="#ffaeae">
        <EditText
            android:id="@+id/edit_result_name"
            android:layout_width="match_parent"
