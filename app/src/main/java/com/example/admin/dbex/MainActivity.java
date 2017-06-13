@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -43,7 +44,18 @@ public class MainActivity extends AppCompatActivity {
                 sqlDb.close();
             }
         });
+        butInsert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sqlDb=myHelper.getWritableDatabase();
+                //(Text)문자열을 저장할 땐 ' ' ,integer라서 뒤엔 ''가 없다.
+                String sql="insert into idolTable values('"+editName.getText()+"',"+editCount.getText()+")";//값이 들어감.
 
+                sqlDb.execSQL(sql);
+                sqlDb.close();
+                Toast.makeText(MainActivity.this,"저장됨",Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
