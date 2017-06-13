@@ -83,11 +83,13 @@
            android:id="@+id/edit_result_name"
            android:layout_width="match_parent"
            android:layout_height="match_parent"
-           android:layout_weight="1"/>
+           android:lines="13"
+     />
         <EditText
             android:id="@+id/edit_result_count"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:lines="13"
+        />
     </LinearLayout>
 </LinearLayout>
