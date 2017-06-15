@@ -18,10 +18,11 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends AppCompatActivity {
-  EditText editName,editCount,editResultName,editResultCount;
+    EditText editName,editCount,editResultName,editResultCount;
     Button butInit,butInsert,butSelect;
     MyDBHelper myHelper;
     SQLiteDatabase sqlDb; //데이터 베이스 참조 변수
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +67,14 @@ public class MainActivity extends AppCompatActivity {
                 String names="Idol 이름"+"\r\n"+"============="+"\r\n";
                 String counts="Idol 인원수"+"\r\n"+"============="+"\r\n";
                 //커서를 접근할 수 없다면 false 반환
-                while(cursor.moveToNext()){
-
+                while(cursor.moveToNext()){ //데이터가 있을 동안만 반복문 실행
+                    names+=cursor.getString(0)+"\r\n";//첫번째 컬럼 (인덱스 0번)
+                    counts+=cursor.getInt(1)+"\r\n";//커서가 갖고있는 인덱스 번호 (이름,번호 이런게 컬럼 counts는 두번째 컬럼이라서 1)
                 }
+                editResultName.setText(names);
+                editResultCount.setText(counts);
+                cursor.close();
+                sqlDb.close();
             }
         });
 
@@ -83,12 +89,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
             String sql="create table idolTable(idolName text nor null primary key,idolCount integer )";
+            //아이돌 이름은 프라이머리 키 이기때문에 중복되면 안된다.
             sqLiteDatabase.execSQL(sql);
         }
 
         @Override //이미 idolTable이 존재한다면 기존의 테이블을 삭제하고, 새로 테이블을 만들 때 호출하는
         public void onUpgrade(SQLiteDatabase  sqLiteDatabase, int oldVersion, int newVersion) {
-            String sql="drop table if exist idolTable";//만약 아이돌테이블이 존재한다면 삭제해라.
+            String sql="drop table if exists idolTable";//만약 아이돌테이블이 존재한다면 삭제해라.
             sqLiteDatabase.execSQL(sql);
             onCreate( sqLiteDatabase);
 
