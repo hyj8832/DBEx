@@ -19,7 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends AppCompatActivity {
     EditText editName,editCount,editResultName,editResultCount;
-    Button butInit,butInsert,butSelect;
+    Button butInit,butInsert,butSelect,butUpdate,butDelete;
     MyDBHelper myHelper;
     SQLiteDatabase sqlDb; //데이터 베이스 참조 변수
 
@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         butInit=(Button)findViewById(R.id.but_init);
         butInsert=(Button)findViewById(R.id.but_insert);
         butSelect=(Button)findViewById(R.id.but_select);
+        butUpdate=(Button)findViewById(R.id.but_update);
+        butDelete=(Button)findViewById(R.id.but_delete);
 
         //DB생성
         myHelper=new MyDBHelper(this);
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 sqlDb=myHelper.getWritableDatabase();
                 //(Text)문자열을 저장할 땐 ' ' ,integer라서 뒤엔 ''가 없다.
                 String sql="insert into idolTable values('"+editName.getText()+"',"+editCount.getText()+")";//값이 들어감.
-
                 sqlDb.execSQL(sql);
                 sqlDb.close();
                 Toast.makeText(MainActivity.this,"저장됨",Toast.LENGTH_LONG).show();
@@ -77,7 +78,29 @@ public class MainActivity extends AppCompatActivity {
                 sqlDb.close();
             }
         });
+        butUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sqlDb=myHelper.getWritableDatabase();
+                String sql="update idolTable set idolCount="+editCount.getText()+" where idolName='"+editName.getText()+"'";//인원수가 중복된다면 인원수를 수정해라!
 
+                sqlDb.execSQL(sql);
+                sqlDb.close();
+                Toast.makeText(MainActivity.this,"인원수가 수정됨",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        butDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sqlDb=myHelper.getWritableDatabase();
+                String sql="delete idolTable  where idolName='"+editName.getText()+"'";
+                //delete 는 행을 삭제 , drop은 테이블 삭제( 테이블안에 행들 존재)
+                 sqlDb.execSQL(sql);
+                sqlDb.close();
+                Toast.makeText(MainActivity.this,"삭제되었음",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     class MyDBHelper extends SQLiteOpenHelper {
@@ -88,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         //idolTable이라는 이름의 테이블 생성
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            String sql="create table idolTable(idolName text nor null primary key,idolCount integer )";
+            String sql="create table idolTable(idolName text nor null primary key,idolCount integer )";//테이블 생성
             //아이돌 이름은 프라이머리 키 이기때문에 중복되면 안된다.
             sqLiteDatabase.execSQL(sql);
         }
